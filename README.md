@@ -36,3 +36,7 @@ Esto para correr el proyecto y se consumido por el WEB(El proyecto empezará a c
 
 ####Probar la API (Swagger) 
 http://localhost:5000/swagger
+
+####Nota
+La base de datos ya va incluida en el Docket, por ese motivo no se tiene
+un archivo para ejecutar la base de datos. 
