@@ -1,0 +1,50 @@
+version: "3.9"
+services:
+  bd:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: visitas2025*
+      MYSQL_DATABASE: visitasdb
+      TZ: UTC
+    command: ["--default-authentication-plugin=mysql_native_password","--sql-mode="]
+    volumes:
+      - datosbd:/var/lib/mysql
+    ports:
+      - "3306:3306"   # solo para uso local
+
+  # Mailhog ya no es necesario si vas a usar Gmail.
+  # Si quieres, puedes borrarlo o dejarlo comentado:
+  # correo:
+  #   image: mailhog/mailhog:latest
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8025:8025"
+  #     - "1025:1025"
+
+  api:
+    build: ./Api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5000"
+      ConnectionStrings__ConexionPrincipal: "Server=bd;Port=3306;Database=visitasdb;User=root;Password=visitas2025*;TreatTinyAsBoolean=true;SslMode=None;"
+      Jwt__Emisor: "VisitasEmisor"
+      Jwt__Audiencia: "VisitasAudiencia"
+      Jwt__Clave: "b2d8e1f0b7c94a2d83e6f4a1c5d9e0b3a7f2c1d8e4f6a9b0c3d5e7f1a2b4c6d8"
+
+      # ==== SMTP GMAIL ====
+      Smtp__Host: "smtp.gmail.com"
+      Smtp__Puerto: "587"
+      Smtp__Remitente: "cesar.hernandez.g30@gmail.com"
+      Smtp__Usuario: "cesar.hernandez.g30@gmail.com"
+      Smtp__Contrasena: "vedj bszi tzfq xenm"  # tu contraseña de aplicación
+
+    depends_on:
+      - bd
+    ports:
+      - "5000:5000"
+
+volumes:
+  datosbd:
+
